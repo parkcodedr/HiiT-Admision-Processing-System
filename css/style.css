@@ -1,0 +1,44 @@
+body {
+  box-sizing: border-box;
+}
+.image-header {
+  background: #ce3500;
+  padding: 2px;
+}
+.image-header img {
+  max-width: 100px;
+  max-height: 100px;
+}
+a {
+  color: #ce3500;
+}
+.primary-color {
+  color: #ce3500;
+}
+.nav-item a {
+  color: #ce3500;
+  font-weight: bold;
+}
+
+.active {
+  border-bottom: 2px solid #ce3500;
+}
+.bg-main {
+  background: #ce3500;
+}
+.footer-title {
+  border-bottom: 2px solid #ce3500;
+}
+.btn-main {
+  background: #ce3500;
+  color: white;
+}
+
+#togglePassword {
+  cursor: pointer;
+  color: #ce3500;
+  margin-left: -35px;
+  padding: 8px;
+  z-index: 999;
+  margin-top: 2px;
+}
