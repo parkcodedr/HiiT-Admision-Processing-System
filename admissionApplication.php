@@ -1,3 +1,42 @@
+<?php
+include_once('connection.php');
+$error = "";
+$message = "";
+
+if (isset($_POST["submit"])) {
+    $first_name = clean_input($_POST["fname"]);
+    $last_name = clean_input($_POST["lname"]);
+    $middle_name = clean_input($_POST["mname"]);
+    $email = clean_input($_POST["email"]);
+    $gender = clean_input($_POST["gender"]);
+    $phone = clean_input($_POST["phone"]);
+    $contact_address = clean_input($_POST["contactAddress"]);
+    $permanent_address = clean_input($_POST["permanentAddress"]);
+    $faculty = clean_input($_POST["faculty"]);
+    $department = clean_input($_POST["department"]);
+    $course = clean_input($_POST["course"]);
+
+    if (
+        empty($first_name) || empty($last_name) || empty($middle_name)
+        || empty($phone) || empty($gender) || empty($email)
+        || empty($contact_address) || empty($permanent_address)
+        || empty($faculty) || empty($department) || empty($course)
+    ) {
+        $error .= "All fields are required";
+    } else {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error .= "Invalid Email Address";
+        } else {
+            echo $message .= "Ok";
+        }
+    }
+}
+
+
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,7 +49,7 @@
     <link href="images/bsulogo.png" rel="icon">
 
     <link href="css/all.css" rel="stylesheet">
-    <title>Portal|CUTA| Login</title>
+    <title>Portal|CUTA| Admission Application</title>
 </head>
 
 <body>
@@ -22,68 +61,44 @@
         <h2 class=" text-white text-center">COMFORT UNIVERSITY OF TECHNOLOGY</h2>
         <h6 class="text-center h4">P.M.B 2002, ABUJA FCT</h6>
     </div>
-    <nav class="bg-light p-2 sticky-top ">
-        <ul class="nav container">
-            <li class="nav-item active">
-                <a href="#" class="nav-link ">Home</a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">About</a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">Contact</a>
-            </li>
-
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    Admission
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a href="admissionApplication.html" class="dropdown-item">Post UTME</a></li>
-                    <li><a href="#" class="dropdown-item">Direct Entry (DE)</a></li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li><a href="#" class="dropdown-item">Sandwich</a></li>
-                    <li><a href="#" class="dropdown-item">E-Learning</a></li>
-                    <li><a href="#" class="dropdown-item">Check Admission Status</a></li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a href="login.html" class="nav-link">Portal</a>
-            </li>
-
-
-        </ul>
-
-    </nav>
-
+    <?php include_once('layout/nav.php'); ?>
     <main class="container">
         <div class="row justify-content-center">
             <div class="col-md-12  m-5">
-                <form class="form p-3" autocomplete="off">
+                <form class="form p-3" method="POST">
                     <h4 class="primary-color text-center">Admission Application</h4>
                     <hr class="primary-color">
 
+                    <h5 class="text-center text-danger fw-bold">
+                        <?php
+                        echo $error;
+
+                        ?>
+                    </h5>
+                    <h5 class="text-center text-success fw-bold">
+                        <?php
+                        echo $message;
+
+                        ?>
+                    </h5>
                     <section class="row">
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label>Lastname</label>
-                                <input type="text" name="lname" placeholder="Enter Lastname" class="form-control">
+                                <input type="text" name="lname" placeholder="Enter Lastname" class="form-control" value="<?php echo (isset($last_name)) ? $last_name : ""; ?>">
                             </div>
 
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label>Firstname</label>
-                                <input type="text" name="fname" placeholder="Enter Firstname" class="form-control">
+                                <input type="text" name="fname" placeholder="Enter Firstname" class="form-control" value="<?php echo (isset($first_name)) ? $first_name : ""; ?>">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label>Middle Name</label>
-                                <input type="text" name="mname" placeholder="Enter Middle Name" class="form-control">
+                                <input type="text" name="mname" placeholder="Enter Middle Name" class="form-control" value="<?php echo (isset($middle_name)) ? $middle_name : ""; ?>">
                             </div>
                         </div>
                     </section>
@@ -92,7 +107,7 @@
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label>Email</label>
-                                <input type="text" name="email" placeholder="Enter Email" class="form-control">
+                                <input type="text" name="email" placeholder="Enter Email" class="form-control" value="<?php echo (isset($email)) ? $email : ""; ?>">
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -100,15 +115,15 @@
                                 <label>Gender</label>
                                 <select class="form-select" name="gender">
                                     <option value="">Select Gender</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
+                                    <option value="male" <?php echo (isset($gender) && $gender == 'male') ? "selected" : ""; ?>>Male</option>
+                                    <option value="female" <?php echo (isset($gender) && $gender == 'female') ? "selected" : ""; ?>>Female</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label>Phone</label>
-                                <input type="tel" name="phone" placeholder="Enter Phone Number" class="form-control">
+                                <input type="tel" name="phone" placeholder="Enter Phone Number" class="form-control" value="<?php echo (isset($phone)) ? $phone : ""; ?>">
                             </div>
 
                         </div>
@@ -119,6 +134,7 @@
                             <div class="mb-3">
                                 <label>Contact Address</label>
                                 <textarea class="form-control" name="contactAddress" rows="5">
+                                <?php echo (isset($contact_address)) ? $contact_address : ""; ?>
                                </textarea>
                             </div>
                         </div>
@@ -126,10 +142,49 @@
                             <div class="mb-3">
                                 <label>Permanent Address</label>
                                 <textarea class="form-control" name="permanentAddress" rows="5">
+                                <?php echo (isset($permanent_address)) ? $permanent_address : ""; ?>
                                </textarea>
                             </div>
                         </div>
 
+                    </section>
+                    <section class="row">
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label>Faculty</label>
+                                <select class="form-select" name="faculty">
+                                    <option value="">Select Faculty</option>
+                                    <option value="Science" <?php echo (isset($faculty) && $faculty == 'Science') ? "selected" : ""; ?>>Science</option>
+                                    <option value="Art" <?php echo (isset($faculty) && $faculty == 'Art') ? "selected" : ""; ?>>Art</option>
+                                    <option value="Social Science" <?php echo (isset($faculty) && $faculty == 'Social Science') ? "selected" : ""; ?>>Social Science</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label>Department</label>
+                                <select class="form-select" name="department">
+                                    <option value="">Select Department</option>
+                                    <option value="Computer Science" <?php echo (isset($department) && $department == 'Computer Science') ? "selected" : ""; ?>>Computer Science</option>
+                                    <option value="Chemistry" <?php echo (isset($department) && $department == 'Chemistry') ? "selected" : ""; ?>>Chemistry</option>
+                                    <option value="Economics" <?php echo (isset($department) && $department == 'Economics') ? "selected" : ""; ?>>Economics</option>
+                                    <option value="English" <?php echo (isset($department) && $department == 'English') ? "selected" : ""; ?>>English</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label>Course</label>
+                                <select class="form-select" name="course">
+                                    <option value="">Select Course</option>
+                                    <option value="Computer Science" <?php echo (isset($course) && $course == 'Computer Science') ? "selected" : ""; ?>>B.sc Computer Science</option>
+                                    <option value="Ecomonics" <?php echo (isset($course) && $course == 'Ecomonics') ? "selected" : ""; ?>>B.sc Ecomonics</option>
+                                    <option value="English" <?php echo (isset($course) && $course == 'English') ? "selected" : ""; ?>>B.A English</option>
+                                    <option value="Mass Communication" <?php echo (isset($course) && $course == 'English') ? "selected" : ""; ?>>Masss Communication</option>
+                                </select>
+                            </div>
+                        </div>
                     </section>
 
                     <div class="mb-3">
@@ -143,92 +198,11 @@
 
 
 
-    <section class="footer-banner row bg-dark p-5 container-fluid">
-
-        <div class="col-md-3">
-            <p class="h5 text-white">
-                <span class="footer-title">About</span> us
-            </p>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a href="#" class="nav-link text-white">
-                        <img src="images/bsulogo.png" height="50px" width="50px">
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <p class="nav-link text-white h6">Comfort University of Technology, Abuja</p>
-                </li>
-
-            </ul>
-        </div>
-        <div class="col-md-3">
-            <p class="h5 text-white">
-                <span class="footer-title">Social</span> Links
-            </p>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a href="https://web.facebook.com/ACU.Oyo" target="_blank" class="nav-link text-white">
-                        <i class="fab fa-facebook" style="font-size: 20px;"></i> Facebook
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link text-white">
-                        <i class="fab fa-instagram" style="font-size: 20px;"></i> Instagram
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link text-white">
-                        <i class="fab fa-twitter" style="font-size: 20px;"></i> Twitter
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link text-white">
-                        <i class="fab fa-linkedin-in" style="font-size: 20px;"></i> Linkedin
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <div class="col-md-6">
-            <p class="h5 text-white">
-                <span class="footer-title">Contact</span> Us
-            </p>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a href="https://web.facebook.com/ACU.Oyo" target="_blank" class="nav-link text-white">
-                        <i class="fas fa-envelope"></i> support@cuta.edu.ng
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link text-white">
-                        <i class="fas fa-phone-square-alt"></i> +2348140615512 | +2349032925257
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link text-white">
-                        <i class="fas fa-map-marker-alt"></i>
-                        Opp Standard Plaza, Wuse zone 6, Abuja
-                    </a>
-                </li>
-
-            </ul>
-        </div>
-
-    </section>
-    <section class="row bg-main container-fluid">
-        <div class="col-md-12 p-2">
-            <p class="text-white text-center">Copyright &copy Comfort University of Technology, Abuja | All right
-                Reserved
-                <script>document.write(new Date().getFullYear())</script>
-            </p>
-        </div>
-    </section>
-
+    <?php include_once('layout/footer.php'); ?>
 
     <script type="text/javascript" src="js/bootstrap.bundle.min.js">
     </script>
-       <script src="js/script.js"></script>
+    <script src="js/script.js"></script>
 </body>
 
 </html>
