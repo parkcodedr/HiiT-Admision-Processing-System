@@ -1,5 +1,6 @@
 <?php
 include_once('connection.php');
+$db = connect();
 $error = "";
 $message = "";
 
@@ -16,6 +17,9 @@ if (isset($_POST["submit"])) {
     $department = clean_input($_POST["department"]);
     $course = clean_input($_POST["course"]);
 
+    $application_no = "CUT/UTME/" . date("Y") . "/" . rand(00000, 99999);
+
+
     if (
         empty($first_name) || empty($last_name) || empty($middle_name)
         || empty($phone) || empty($gender) || empty($email)
@@ -27,7 +31,20 @@ if (isset($_POST["submit"])) {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $error .= "Invalid Email Address";
         } else {
-            echo $message .= "Ok";
+            //application_no	first_name	last_name	middle_name	gender	email	phone	contact_address	permanent_address	faculty	department	course	admission_status
+            $sql = "INSERT INTO admission_application(application_no,first_name,last_name,middle_name,gender,email,phone,contact_address,permanent_address,faculty,department,course)
+            VALUES('$application_no','$first_name','$last_name','$middle_name','$gender','$email','$phone','$contact_address','$permanent_address','$faculty','$department','$course')
+            ";
+        }
+        $result = $db->query($sql);
+        if ($result) {
+            $message .= "
+            <h5 class='text-success fw-bold text-center'>Application Submitted Successully</h5>
+            ";
+        } else {
+            $message .= "
+            <h5 class='text-danger fw-bold text-center'> Unable to Submit Application</h5>
+            ";
         }
     }
 }
@@ -75,12 +92,12 @@ if (isset($_POST["submit"])) {
 
                         ?>
                     </h5>
-                    <h5 class="text-center text-success fw-bold">
-                        <?php
-                        echo $message;
 
-                        ?>
-                    </h5>
+                    <?php
+                    echo $message;
+
+                    ?>
+
                     <section class="row">
                         <div class="col-md-4">
                             <div class="mb-3">
