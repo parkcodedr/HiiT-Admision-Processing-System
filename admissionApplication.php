@@ -28,23 +28,38 @@ if (isset($_POST["submit"])) {
     ) {
         $error .= "All fields are required";
     } else {
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $email_exist = $db->query("SELECT * FROM admission_application WHERE email='$email'");
+
+        if ($email_exist->num_rows > 0) {
+            $error = "Email Already Registered";
+        } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $error .= "Invalid Email Address";
         } else {
             //application_no	first_name	last_name	middle_name	gender	email	phone	contact_address	permanent_address	faculty	department	course	admission_status
             $sql = "INSERT INTO admission_application(application_no,first_name,last_name,middle_name,gender,email,phone,contact_address,permanent_address,faculty,department,course)
             VALUES('$application_no','$first_name','$last_name','$middle_name','$gender','$email','$phone','$contact_address','$permanent_address','$faculty','$department','$course')
             ";
-        }
-        $result = $db->query($sql);
-        if ($result) {
-            $message .= "
-            <h5 class='text-success fw-bold text-center'>Application Submitted Successully</h5>
-            ";
-        } else {
-            $message .= "
-            <h5 class='text-danger fw-bold text-center'> Unable to Submit Application</h5>
-            ";
+            $result = $db->query($sql);
+            if ($result) {
+                $message .= "
+                <h5 class='text-success fw-bold text-center'>Application Submitted Successully</h5>
+                ";
+                $first_name = "";
+                $last_name = "";
+                $middle_name = "";
+                $email = "";
+                $gender = "";
+                $phone = "";
+                $contact_address = "";
+                $permanent_address = "";
+                $faculty = "";
+                $department = "";
+                $course = "";
+            } else {
+                $message .= "
+                <h5 class='text-danger fw-bold text-center'> Unable to Submit Application </h5>
+                ";
+            }
         }
     }
 }
